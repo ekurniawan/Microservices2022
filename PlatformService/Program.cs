@@ -9,7 +9,22 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 
-builder.Services.AddDbContext<AppDbContext>(opt=>opt.UseInMemoryDatabase("InMem"));
+/*if(builder.Environment.IsProduction())
+{
+    Console.WriteLine("--> Menggunakan SQL Server Db");
+    builder.Services.AddDbContext<AppDbContext>(opt=>opt.UseSqlServer(
+        builder.Configuration.GetConnectionString("PlatformsConn")
+    ));
+}
+else
+{
+    Console.WriteLine("--> Dev Env: Menggunakan InMem Db");
+    builder.Services.AddDbContext<AppDbContext>(opt=>opt.UseInMemoryDatabase("InMem"));
+}*/
+ builder.Services.AddDbContext<AppDbContext>(opt=>opt.UseSqlServer(
+        builder.Configuration.GetConnectionString("PlatformsConn")
+    ));
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 

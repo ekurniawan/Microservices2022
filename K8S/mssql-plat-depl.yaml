@@ -6,20 +6,20 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: mssql
+      app: sqledge
   template:
     metadata:
       labels:
-        app: mssql
+        app: sqledge
     spec:
       containers:
-        - name: mssql
-          image: mcr.microsoft.com/mssql/server:2017-latest
+        - name: azuresqledge
+          image: mcr.microsoft.com/azure-sql-edge:latest
           ports:
             - containerPort: 1433
           env:
           - name: MSSQL_PID
-            value: "Express"
+            value: "Developer"
           - name: ACCEPT_EULA
             value: "Y"
           - name: SA_PASSWORD
@@ -27,6 +27,12 @@ spec:
               secretKeyRef:
                 name: mssql
                 key: SA_PASSWORD
+          - name: MSSQL_AGENT_ENABLED
+            value: "TRUE"
+          - name: MSSQL_COLLATION
+            value: "SQL_Latin1_General_CP1_CI_AS"
+          - name: MSSQL_LCID
+            value: "1033"
           volumeMounts:
           - mountPath: /var/opt/mssql/data
             name: mssqldb
@@ -34,6 +40,9 @@ spec:
       - name: mssqldb
         persistentVolumeClaim:
           claimName: mssql-claim
+      terminationGracePeriodSeconds: 30
+      securityContext:
+        fsGroup: 10001    
 ---
 apiVersion: v1
 kind: Service
@@ -42,7 +51,7 @@ metadata:
 spec:
   type: ClusterIP
   selector:
-    app: mssql
+    app: sqledge
   ports:
   - name: mssql
     protocol: TCP
@@ -56,7 +65,7 @@ metadata:
 spec:
   type: LoadBalancer
   selector:
-    app: mssql
+    app: sqledge
   ports:
   - protocol: TCP
     port: 1433
