@@ -21,6 +21,5 @@ namespace CommandsService.Controllers
             Console.WriteLine("--> Inbound POST CommandService");
             return Ok("Inbound test dari Platform Controller");        
         }
-       
     }
 }
