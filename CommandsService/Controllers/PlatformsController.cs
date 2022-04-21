@@ -18,6 +18,7 @@ namespace CommandsService.Controllers
             _mapper = mapper;
         }
 
+        [HttpGet]
         public ActionResult<IEnumerable<PlatformReadDto>> GetPlatforms()
         {
             Console.WriteLine("--> Ambil platforms dari Command Service");
